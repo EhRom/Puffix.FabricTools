@@ -16,8 +16,10 @@ public class AdminWorkspacesService(IConfiguration configuration, IMsApiRestToke
     private const string GIT_CONNECTION_COMMAND = $"{BASE_COMMAND}/discoverGitConnections";
     private const string GIT_CONNECTION_BASE_FILE_NAME = "git_connections";
 
-    private const string ITEMS_COMMAND = $"admin/items";
+    private const string ITEMS_PART = "items";
+    private const string ITEMS_COMMAND = $"admin/{ITEMS_PART}";
     private const string ITEMS_BASE_FILE_NAME = "admin_items";
+    private const string USERS_PART = "users";
 
     public async Task<IWorkspaceCommandResult<AdminWorkspaceList>> List()
     {
@@ -61,6 +63,21 @@ public class AdminWorkspacesService(IConfiguration configuration, IMsApiRestToke
         return IWorkspaceCommandResult<FabricAdminItemList>.CreateNew(filePath, gitConnectionList.Elements.Count, gitConnectionList);
     }
 
+    public async Task<IWorkspaceCommandResult<FabricAdminItem>> GetItemRoleAssignements(string workspaceId, string itemId)
+    {
+        FabricAdminItem item = await CoreGetItemDetails(workspaceId, itemId);
+
+        ItemAccessDetailsList accessDetails = await CoreGetItemAccessDetails(workspaceId, itemId);
+        item.AccessDetails = accessDetails?.Elements ?? [];
+
+        string fileName = ITEMS_BASE_FILE_NAME.TrimEnd('s');
+        fileName = $"{fileName}-{itemId}-withroles";
+
+        string filePath = await SaveContent(fileName, item);
+
+        return IWorkspaceCommandResult<FabricAdminItem>.CreateNew(filePath, 1, item);
+    }
+
     private async Task<AdminWorkspace> CoreGetWorkspaceDetails(string workspaceId)
     {
         string command = $"{BASE_COMMAND}/{workspaceId}";
@@ -71,5 +88,17 @@ public class AdminWorkspacesService(IConfiguration configuration, IMsApiRestToke
     {
         string command = $"{BASE_COMMAND}/{workspaceId}/users";
         return await GetElement<WorkspaceAccessList>(command);
+    }
+
+    private async Task<FabricAdminItem> CoreGetItemDetails(string workspaceId, string itemId)
+    {
+        string command = $"{BASE_COMMAND}/{workspaceId}/{ITEMS_PART}/{itemId}";
+        return await GetElement<FabricAdminItem>(command);
+    }
+
+    private async Task<ItemAccessDetailsList> CoreGetItemAccessDetails(string workspaceId, string itemId)
+    {
+        string command = $"{BASE_COMMAND}/{workspaceId}/{ITEMS_PART}/{itemId}/{USERS_PART}";
+        return await GetElement<ItemAccessDetailsList>(command);
     }
 }

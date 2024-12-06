@@ -30,4 +30,7 @@ public class FabricAdminItem
 
     [JsonPropertyName("creatorPrincipal")]
     public Principal Creator { get; set; } = new();
+
+    [JsonPropertyName("accessDetails")]
+    public ICollection<ItemAccessDetails> AccessDetails { get; set; } = [];
 }

@@ -25,3 +25,4 @@ The following functionnalities are available:
 		- [List git connections](https://learn.microsoft.com/en-us/rest/api/fabric/admin/workspaces/list-git-connections)
 		- List role assignements (automate the *get worksapce* command for each workspaces)
 		- [List items in a workspace](https://learn.microsoft.com/en-us/rest/api/fabric/core/items/list-items)
+		- [Get item access details](https://learn.microsoft.com/en-us/rest/api/fabric/admin/items/list-item-access-details)

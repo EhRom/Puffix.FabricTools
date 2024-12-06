@@ -11,4 +11,6 @@ public interface IAdminWorkspacesService
     Task<IWorkspaceCommandResult<GitConnectionList>> ListGitConnections();
 
     Task<IWorkspaceCommandResult<FabricAdminItemList>> ListItems();
+
+    Task<IWorkspaceCommandResult<FabricAdminItem>> GetItemRoleAssignements(string workspaceId, string itemId);
 }

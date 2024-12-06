@@ -10,6 +10,7 @@ using Puffix.FabricTools.ConsoleApp.Domain.Gateways.Models;
 using Puffix.FabricTools.ConsoleApp.Domain.RestApi.Models;
 using Puffix.FabricTools.ConsoleApp.Domain.Workspaces;
 using Puffix.FabricTools.ConsoleApp.Domain.Workspaces.Models;
+using System;
 using System.Diagnostics;
 
 namespace Puffix.FabricTools.ConsoleApp.Presentation;
@@ -84,10 +85,11 @@ public class InventoryCommands
             ConsoleHelper.Write("- D to list workspaces details.");
             ConsoleHelper.Write("- A to list workspaces (admin).");
             ConsoleHelper.Write("- W to get workspace details.");
-            ConsoleHelper.Write("- X to get workspace (admin) with access details.");
+            ConsoleHelper.Write("- X to get workspace (admin) with access details / role assignements.");
             ConsoleHelper.Write("- G to list Git connections.");
-            ConsoleHelper.Write("- U to list role assignements.");
+            ConsoleHelper.Write("- U to list role assignements / access details.");
             ConsoleHelper.Write("- I to list items in a workspace.");
+            ConsoleHelper.Write("- J to get item access details / role assignements.");
             ConsoleHelper.Write("- Escape to return to main menu.");
 
             ConsoleHelper.WriteNewLine(1);
@@ -111,6 +113,8 @@ public class InventoryCommands
                 await ListWithRoleAssignements();
             else if (key == ConsoleKey.I)
                 await GetWorkspaceItems();
+            else if (key == ConsoleKey.J)
+                await GetWorkspaceAdminItemWithAccessDetails();
             else
                 ConsoleHelper.WriteWarning($"The key {key} is not a known command (for the moment :-) )");
 
@@ -272,6 +276,25 @@ public class InventoryCommands
         await ExecuteCommand<IWorkspaceCommandResult<FabricItemList>, FabricItemList>(commandMessage, successMessage, errorMessage, command, guid.ToString("D"));
     }
 
+    public async Task GetWorkspaceAdminItemWithAccessDetails()
+    {
+        const string workspaceText = "workspace ID of the item";
+
+        Guid workspaceGuid = GetEnteredGuid(workspaceText);
+
+        const string itemText = "item ID from which to get role assignments";
+
+        Guid itemGuid = GetEnteredGuid(itemText);
+
+        string commandMessage = $"Get the {itemGuid} item from {workspaceGuid} workspace role assignements";
+        string successMessage = $"The {itemGuid} item from {workspaceGuid} workspace role assignements";
+        string errorMessage = $"getting the {itemGuid} item from {workspaceGuid} workspace role assignements";
+
+        async Task<IWorkspaceCommandResult<FabricAdminItem>> command(string worksapceId, string itemId) => await adminWorkspacesService.GetItemRoleAssignements(worksapceId, itemId);
+
+        await ExecuteCommand<IWorkspaceCommandResult<FabricAdminItem>, FabricAdminItem>(commandMessage, successMessage, errorMessage, command, workspaceGuid.ToString("D"), itemGuid.ToString("D"));
+    }
+
     private async Task ExecuteCommand<CommandResultT, ResultT>(string commandMessage, string successMessage, string errorMessage, Func<Task<CommandResultT>> command)
         where CommandResultT : ICommandResult<ResultT>
         where ResultT : class
@@ -306,6 +329,29 @@ public class InventoryCommands
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             CommandResultT result = await command(argument);
+
+            stopwatch.Stop();
+            ConsoleHelper.WriteVerbose($"Command duration: {stopwatch.Elapsed}");
+
+            ConsoleHelper.WriteSuccess($"{successMessage} is avalable in the {result.ResultFilePath} file ({result.ResultCount} elements saved).");
+        }
+        catch (Exception error)
+        {
+            ConsoleHelper.WriteError($"An error occurred while {errorMessage} in the Fabric service", error);
+        }
+    }
+
+    private async Task ExecuteCommand<CommandResultT, ResultT>(string commandMessage, string successMessage, string errorMessage, Func<string, string, Task<CommandResultT>> command, string firstArgument, string seceondArgument)
+        where CommandResultT : ICommandResult<ResultT>
+        where ResultT : class
+    {
+        try
+        {
+            ConsoleHelper.WriteInfo($"{commandMessage} in the Fabric service");
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            CommandResultT result = await command(firstArgument, seceondArgument);
 
             stopwatch.Stop();
             ConsoleHelper.WriteVerbose($"Command duration: {stopwatch.Elapsed}");
