@@ -22,7 +22,7 @@ public class ActionsCommands
             key = ConsoleHelper.ReadKey();
 
             if (key == ConsoleKey.Escape)
-                ConsoleHelper.WriteInfo("RReturn to main menu");
+                ConsoleHelper.WriteInfo("Return to main menu");
             else if (key == ConsoleKey.R)
                 await AddRoleAssignments();
             //else if (key == ConsoleKey.C)

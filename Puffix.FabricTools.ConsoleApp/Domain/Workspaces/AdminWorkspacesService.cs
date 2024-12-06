@@ -16,6 +16,9 @@ public class AdminWorkspacesService(IConfiguration configuration, IMsApiRestToke
     private const string GIT_CONNECTION_COMMAND = $"{BASE_COMMAND}/discoverGitConnections";
     private const string GIT_CONNECTION_BASE_FILE_NAME = "git_connections";
 
+    private const string ITEMS_COMMAND = $"admin/items";
+    private const string ITEMS_BASE_FILE_NAME = "admin_items";
+
     public async Task<IWorkspaceCommandResult<AdminWorkspaceList>> List()
     {
         AdminWorkspaceList workspaceList = await GetElementCollection<AdminWorkspaceList, AdminWorkspace>(BASE_COMMAND);
@@ -48,6 +51,14 @@ public class AdminWorkspacesService(IConfiguration configuration, IMsApiRestToke
 
         string filePath = await SaveContent(GIT_CONNECTION_BASE_FILE_NAME, gitConnectionList);
         return IWorkspaceCommandResult<GitConnectionList>.CreateNew(filePath, gitConnectionList.Elements.Count, gitConnectionList);
+    }
+
+    public async Task<IWorkspaceCommandResult<FabricAdminItemList>> ListItems()
+    {
+        FabricAdminItemList gitConnectionList = await GetElementCollection<FabricAdminItemList, FabricAdminItem>(ITEMS_COMMAND);
+
+        string filePath = await SaveContent(ITEMS_BASE_FILE_NAME, gitConnectionList);
+        return IWorkspaceCommandResult<FabricAdminItemList>.CreateNew(filePath, gitConnectionList.Elements.Count, gitConnectionList);
     }
 
     private async Task<AdminWorkspace> CoreGetWorkspaceDetails(string workspaceId)

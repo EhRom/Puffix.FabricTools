@@ -45,6 +45,7 @@ public class InventoryCommands
             ConsoleHelper.Write("- O to list connections.");
             ConsoleHelper.Write("- D to list domains.");
             ConsoleHelper.Write("- G to list gateways.");
+            ConsoleHelper.Write("- I to list items in the tenant.");
             ConsoleHelper.Write("- W to natigate to workspaces menu.");
             ConsoleHelper.Write("- Escape to return to main menu.");
 
@@ -52,7 +53,7 @@ public class InventoryCommands
             key = ConsoleHelper.ReadKey();
 
             if (key == ConsoleKey.Escape)
-                ConsoleHelper.WriteInfo("RReturn to main menu");
+                ConsoleHelper.WriteInfo("Return to main menu");
             else if (key == ConsoleKey.C)
                 await ListCapcities();
             else if (key == ConsoleKey.O)
@@ -61,6 +62,8 @@ public class InventoryCommands
                 await ListDomains();
             else if (key == ConsoleKey.G)
                 await ListGateways();
+            else if (key == ConsoleKey.I)
+                await ListTenantItems();
             else if (key == ConsoleKey.W)
                 await SelectWorkspacesCommands();
             else
@@ -156,6 +159,17 @@ public class InventoryCommands
         Func<Task<IGatewayCommandResult<GatewayList>>> command = gatewaysService.List;
 
         await ExecuteCommand<IGatewayCommandResult<GatewayList>, GatewayList>(commandMessage, successMessage, errorMessage, command);
+    }
+
+    public async Task ListTenantItems()
+    {
+        const string commandMessage = "List items";
+        const string successMessage = "The items list";
+        const string errorMessage = "listing the items";
+
+        Func<Task<IWorkspaceCommandResult<FabricAdminItemList>>> command = adminWorkspacesService.ListItems;
+
+        await ExecuteCommand<IWorkspaceCommandResult<FabricAdminItemList>, FabricAdminItemList>(commandMessage, successMessage, errorMessage, command);
     }
 
     public async Task ListWorkspaces()

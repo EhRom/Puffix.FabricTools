@@ -32,7 +32,7 @@ public class AuthenticationCommands(ITokenRestApiService tokenRestApiService)
             key = ConsoleHelper.ReadKey();
 
             if (key == ConsoleKey.Escape)
-                ConsoleHelper.WriteInfo("RReturn to main menu");
+                ConsoleHelper.WriteInfo("Return to main menu");
             else if (key == ConsoleKey.A)
                 await Authenticate();
             else if (key == ConsoleKey.L)
