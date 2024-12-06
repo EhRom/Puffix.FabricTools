@@ -49,10 +49,7 @@ public class InventoryCommands
             ConsoleHelper.Write("- Escape to return to main menu.");
 
             ConsoleHelper.WriteNewLine(1);
-
-            key = Console.ReadKey().Key;
-            ConsoleHelper.ClearLastLines();
-            //ConsoleHelper.ClearLastCharacters(1);
+            key = ConsoleHelper.ReadKey();
 
             if (key == ConsoleKey.Escape)
                 ConsoleHelper.WriteInfo("RReturn to main menu");
@@ -91,10 +88,7 @@ public class InventoryCommands
             ConsoleHelper.Write("- Escape to return to main menu.");
 
             ConsoleHelper.WriteNewLine(1);
-
-            key = Console.ReadKey().Key;
-            ConsoleHelper.ClearLastLines();
-            //ConsoleHelper.ClearLastCharacters(1);
+            key = ConsoleHelper.ReadKey();
 
             if (key == ConsoleKey.Escape)
                 ConsoleHelper.WriteInfo("RReturn to main menu");

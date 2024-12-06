@@ -29,10 +29,7 @@ public class AuthenticationCommands(ITokenRestApiService tokenRestApiService)
             ConsoleHelper.Write("- Escape to return to main menu.");
 
             ConsoleHelper.WriteNewLine(1);
-
-            key = Console.ReadKey().Key;
-
-            ConsoleHelper.ClearLastCharacters(1);
+            key = ConsoleHelper.ReadKey();
 
             if (key == ConsoleKey.Escape)
                 ConsoleHelper.WriteInfo("RReturn to main menu");

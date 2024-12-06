@@ -19,12 +19,7 @@ public class ActionsCommands
             ConsoleHelper.Write("- Escape to return to main menu.");
 
             ConsoleHelper.WriteNewLine(1);
-
-            key = Console.ReadKey().Key;
-
-            // TODO
-            Console.SetCursorPosition(0, Console.CursorTop + 1);
-            ConsoleHelper.ClearLastLines(1);
+            key = ConsoleHelper.ReadKey();
 
             if (key == ConsoleKey.Escape)
                 ConsoleHelper.WriteInfo("RReturn to main menu");

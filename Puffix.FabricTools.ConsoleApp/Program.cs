@@ -37,9 +37,7 @@ do
     ConsoleHelper.Write("- Q to quit.");
 
     ConsoleHelper.WriteNewLine(1);
-
-    key = Console.ReadKey().Key;
-    ConsoleHelper.ClearLastCharacters(1);
+    key = ConsoleHelper.ReadKey();
 
     if (key == ConsoleKey.Q)
         ConsoleHelper.WriteInfo("Thank you for using the  Fabric API console App. See you soon!");
@@ -47,7 +45,6 @@ do
     {
         AuthenticationCommands authenticationCommands = container.Resolve<AuthenticationCommands>();
         await authenticationCommands.SelectAuthenticationCommand();
-        //await authenticationCommands.Authenticate();
     }
     else if (key == ConsoleKey.I)
     {
