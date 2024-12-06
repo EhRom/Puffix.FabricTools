@@ -62,7 +62,8 @@ public class BaseRestFabricService(IConfiguration configuration, IMsApiRestToken
         {
             CollectionResultT nextResult = await GetElementCollection<CollectionResultT, ResultT>(command, result.ContinutationToken);
 
-            result.Elements = [.. nextResult.Elements];
+            result.Elements = result.Elements ?? [];
+            result.Elements = [.. result.Elements, .. nextResult.Elements];
             result.ContinutationUri = string.Empty;
             result.ContinutationToken = string.Empty;
         }
