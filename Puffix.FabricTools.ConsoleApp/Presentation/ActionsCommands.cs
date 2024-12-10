@@ -55,12 +55,6 @@ public class ActionsCommands(IWorkspacesService workspacesService)
     // https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/provision-identity?tabs=HTTP
     // https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/list-workspace-role-assignments?tabs=HTTP
 
-
-    // TODO set user as admin (json format...)
-    // TODO set workspace capacity > https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/assign-to-capacity?tabs=HTTP
-    // TODO https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/unassign-from-capacity?tabs=HTTP
-
-    // https://learn.microsoft.com/en-us/rest/api/fabric/articles/item-management/definitions/report-definition
     public async Task AssignWorkspaceCollectionToCapacity()
     {
         const string elementToGet = "capacity and workspace collection";
