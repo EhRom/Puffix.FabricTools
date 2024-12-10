@@ -71,6 +71,13 @@ public class BaseRestFabricService(IConfiguration configuration, IMsApiRestToken
         return result;
     }
 
+    protected async Task PostElement(string command, string queryContent)
+    {
+        IMsApiRestHttpQueryInformation queryInformation = httpRepository.BuildAuthenticatedQuery(token, HttpMethod.Post, baseUrl, command, string.Empty, queryContent);
+
+        string result = await httpRepository.HttpAsync(queryInformation);
+    }
+
     protected async Task<string> SaveContent<ObjectT>(string baseFileName, ObjectT content)
         where ObjectT : class
     {

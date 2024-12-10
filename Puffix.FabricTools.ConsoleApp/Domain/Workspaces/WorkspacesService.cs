@@ -3,6 +3,7 @@ using Puffix.FabricTools.ConsoleApp.Domain.RestApi;
 using Puffix.FabricTools.ConsoleApp.Domain.Workspaces.Models;
 using Puffix.FabricTools.ConsoleApp.Infra.Files;
 using Puffix.FabricTools.ConsoleApp.Infra.MsApiRest;
+using System.Text.Json;
 
 namespace Puffix.FabricTools.ConsoleApp.Domain.Workspaces;
 
@@ -15,6 +16,8 @@ public class WorkspacesService(IConfiguration configuration, IMsApiRestToken tok
 
     private const string ROLES_COMMAND_PART = "roleAssignments";
     private const string ITEMS_COMMAND_PART = "items";
+
+    private const string ASSIGN_TO_CAPACITY_COMMAND_PART = "assignToCapacity";
 
     public async Task<IWorkspaceCommandResult<WorkspaceList>> List()
     {
@@ -90,6 +93,25 @@ public class WorkspacesService(IConfiguration configuration, IMsApiRestToken tok
         return IWorkspaceCommandResult<FabricItemList>.CreateNew(filePath, 1, itemList);
     }
 
+    public async Task<IWorkspaceCommandResult<WorkspaceList>> AssignWorkspaceCollectionToCapacity(string queryFilePath)
+    {
+        WorkspaceList resultWorkspaceList = new WorkspaceList();
+        AssignWorkpsaceToCapacityQuery query = await fileService.LoadJsonContent<AssignWorkpsaceToCapacityQuery>(queryFilePath);
+
+        foreach (string workspaceId in query.WorkpsaceIdCollection)
+        {
+            await CoreAssignWorkspaceToCapacity(query.CapacityId, workspaceId);
+
+            Workspace updatedWorkspace = await CoreGetWorkspaceDetails(workspaceId);
+            resultWorkspaceList.Elements.Add(updatedWorkspace);
+        }
+
+        string fileName = $"updated-{BASE_FILE_NAME}";
+        string filePath = await SaveContent(fileName, resultWorkspaceList);
+
+        return IWorkspaceCommandResult<WorkspaceList>.CreateNew(filePath, resultWorkspaceList.Elements.Count, resultWorkspaceList);
+    }
+
     private async Task<WorkspaceList> CoreList()
     {
         return await GetElementCollection<WorkspaceList, Workspace>(BASE_COMMAND);
@@ -114,5 +136,14 @@ public class WorkspacesService(IConfiguration configuration, IMsApiRestToken tok
         string command = $"{BASE_COMMAND}/{workspaceId}/{ITEMS_COMMAND_PART}";
 
         return await GetElementCollection<FabricItemList, FabricItem>(command);
+    }
+
+    private async Task CoreAssignWorkspaceToCapacity(string capacityId, string workspaceId)
+    {
+        string command = $"{BASE_COMMAND}/{workspaceId}/{ASSIGN_TO_CAPACITY_COMMAND_PART}";
+
+        string queryContent = JsonSerializer.Serialize(CapacityQueryContent.CreateNew(capacityId));
+
+        await PostElement(command, queryContent);
     }
 }

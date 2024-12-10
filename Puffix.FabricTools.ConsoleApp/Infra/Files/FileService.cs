@@ -53,12 +53,21 @@ public class FileService : IFileService
         return await File.ReadAllTextAsync(filePath);
     }
 
+    public async Task<ObjectT> LoadJsonContent<ObjectT>(string filePath)
+        where ObjectT : class
+    {
+        string content = await LoadContent(filePath);
+
+        return JsonSerializer.Deserialize<ObjectT>(content)!;
+    }
+
     public async Task SaveContent(string filePath, string fileContent)
     {
         await File.WriteAllTextAsync(filePath, fileContent);
     }
 
     public async Task SaveJsonContent<ObjectT>(string filePath, ObjectT fileContent, bool indent)
+        where ObjectT : class
     {
         JsonSerializerOptions options = new JsonSerializerOptions
         {

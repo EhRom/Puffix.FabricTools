@@ -16,7 +16,11 @@ public interface IFileService
 
     Task<string> LoadContent(string filePath);
 
+    Task<ObjectT> LoadJsonContent<ObjectT>(string filePath)
+        where ObjectT : class;
+
     Task SaveContent(string filePath, string fileContent);
 
-    Task SaveJsonContent<ObjectT>(string filePath, ObjectT fileContent, bool indent);
+    Task SaveJsonContent<ObjectT>(string filePath, ObjectT fileContent, bool indent)
+        where ObjectT: class;
 }

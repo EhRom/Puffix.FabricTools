@@ -17,6 +17,7 @@ public abstract class BaseFabricList<ElementT>
     public abstract ICollection<ElementT> Elements { get; set; }
 
     [JsonPropertyName("continuationUri")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault | JsonIgnoreCondition.WhenWritingNull)]
     public string ContinutationUri { get; set; } = string.Empty;
 
     [JsonPropertyName("continuationToken")]

@@ -1,9 +1,16 @@
 ﻿using Puffix.ConsoleLogMagnifier;
+using Puffix.FabricTools.ConsoleApp.Domain.RestApi.Models;
+using Puffix.FabricTools.ConsoleApp.Domain.Workspaces;
+using Puffix.FabricTools.ConsoleApp.Domain.Workspaces.Models;
+using System;
+using System.Diagnostics;
 
 namespace Puffix.FabricTools.ConsoleApp.Presentation;
 
-public class ActionsCommands
+public class ActionsCommands(IWorkspacesService workspacesService)
 {
+    private readonly IWorkspacesService workspacesService = workspacesService;
+
     public async Task SelectActionCommand()
     {
         ConsoleKey key;
@@ -16,6 +23,7 @@ public class ActionsCommands
             ConsoleHelper.WriteNewLine(1);
             ConsoleHelper.Write("Press:");
             ConsoleHelper.Write("- R to assign roles from a file.");
+            ConsoleHelper.Write("- C to assign a workspace list to a capacity.");
             ConsoleHelper.Write("- Escape to return to main menu.");
 
             ConsoleHelper.WriteNewLine(1);
@@ -25,8 +33,8 @@ public class ActionsCommands
                 ConsoleHelper.WriteInfo("Return to main menu");
             else if (key == ConsoleKey.R)
                 await AddRoleAssignments();
-            //else if (key == ConsoleKey.C)
-            //await ListCapcities();
+            else if (key == ConsoleKey.C)
+                await AssignWorkspaceCollectionToCapacity();
             else
                 ConsoleHelper.WriteWarning($"The key {key} is not a known command (for the moment :-) )");
 
@@ -53,7 +61,25 @@ public class ActionsCommands
     // TODO https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/unassign-from-capacity?tabs=HTTP
 
     // https://learn.microsoft.com/en-us/rest/api/fabric/articles/item-management/definitions/report-definition
+    public async Task AssignWorkspaceCollectionToCapacity()
+    {
+        const string elementToGet = "capacity and workspace collection";
+        string configurationFilePath = GetEnteredPath(elementToGet);
 
+        if (string.IsNullOrEmpty(configurationFilePath ))
+        {
+            ConsoleHelper.WriteError("A valid file path is required to assign, ; to a capacity.");
+            return;
+        }
+
+        string commandMessage = $"Assign a list of workspace to a capacity";
+        string successMessage = $"The workspaces are assgined to the capacity. The updated workspace collection";
+        string errorMessage = $"assigning  a list of workspace to a capacity";
+
+        async Task<IWorkspaceCommandResult<WorkspaceList>> command(string configurationFilePath) => await workspacesService.AssignWorkspaceCollectionToCapacity(configurationFilePath);
+
+        await ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command, configurationFilePath);
+    }
 
     private static string GetEnteredPath(string elementToGet)
     {
@@ -109,5 +135,28 @@ public class ActionsCommands
         } while (guid == Guid.Empty && retryCount < maxRetryCount);
 
         return guid;
+    }
+
+    private async Task ExecuteCommand<CommandResultT, ResultT>(string commandMessage, string successMessage, string errorMessage, Func<string, Task<CommandResultT>> command, string argument)
+        where CommandResultT : ICommandResult<ResultT>
+        where ResultT : class
+    {
+        try
+        {
+            ConsoleHelper.WriteInfo($"{commandMessage} in the Fabric service");
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            CommandResultT result = await command(argument);
+
+            stopwatch.Stop();
+            ConsoleHelper.WriteVerbose($"Command duration: {stopwatch.Elapsed}");
+
+            ConsoleHelper.WriteSuccess($"{successMessage} is avalable in the {result.ResultFilePath} file ({result.ResultCount} elements saved).");
+        }
+        catch (Exception error)
+        {
+            ConsoleHelper.WriteError($"An error occurred while {errorMessage} in the Fabric service", error);
+        }
     }
 }
