@@ -2,6 +2,8 @@
 
 The **Fabric Tools Console App** is a console application to perform some automatisation tasks, based on the [Fabric REST API](https://learn.microsoft.com/en-us/rest/api/fabric/articles/using-fabric-apis) funcitonnalities.
 
+[![.NET](https://github.com/EhRom/Puffix.FabricTools/actions/workflows/dotnet.yml/badge.svg)](https://github.com/EhRom/Puffix.FabricTools/actions/workflows/dotnet.yml)
+
 The following functionnalities are available:
 
 - Authentication:

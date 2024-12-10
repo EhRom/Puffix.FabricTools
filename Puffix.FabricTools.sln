@@ -10,6 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Puffix.FabricTools.ConsoleApp", "Puffix.FabricTools.ConsoleApp\Puffix.FabricTools.ConsoleApp.csproj", "{1FEDF47E-3F26-4739-ACBB-391A3B853C45}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GithubActions", "GithubActions", "{208A9C3B-4DD8-451C-B3A1-CC627C2F63AD}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,5 +28,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{208A9C3B-4DD8-451C-B3A1-CC627C2F63AD} = {BE26BE49-A2FB-41AC-94D5-12C1018DEC37}
 	EndGlobalSection
 EndGlobal
