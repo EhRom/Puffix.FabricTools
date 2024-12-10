@@ -43,3 +43,17 @@ The following functionnalities are available:
 		]
     }
 	```
+  
+  - [Unassign a capacity from a workspace](https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/unassign-from-capacity?).
+
+    > The capacity ID and the workspace list must be filled in a configuration file. Sample:
+
+    ```json
+    {
+		"workpsaceIdCollection": [
+			"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+			"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+			"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+		]
+    }
+	```

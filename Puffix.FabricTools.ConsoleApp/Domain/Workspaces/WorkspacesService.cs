@@ -18,6 +18,7 @@ public class WorkspacesService(IConfiguration configuration, IMsApiRestToken tok
     private const string ITEMS_COMMAND_PART = "items";
 
     private const string ASSIGN_TO_CAPACITY_COMMAND_PART = "assignToCapacity";
+    private const string UNASSIGN_TO_CAPACITY_COMMAND_PART = "unassignFromCapacity";
 
     public async Task<IWorkspaceCommandResult<WorkspaceList>> List()
     {
@@ -112,6 +113,25 @@ public class WorkspacesService(IConfiguration configuration, IMsApiRestToken tok
         return IWorkspaceCommandResult<WorkspaceList>.CreateNew(filePath, resultWorkspaceList.Elements.Count, resultWorkspaceList);
     }
 
+    public async Task<IWorkspaceCommandResult<WorkspaceList>> UnassignWorkspaceCollectionToCapacity(string queryFilePath)
+    {
+        WorkspaceList resultWorkspaceList = new WorkspaceList();
+        UnassignWorkpsaceToCapacityQuery query = await fileService.LoadJsonContent<UnassignWorkpsaceToCapacityQuery>(queryFilePath);
+
+        foreach (string workspaceId in query.WorkpsaceIdCollection)
+        {
+            await CoreUnassignWorkspaceToCapacity(workspaceId);
+
+            Workspace updatedWorkspace = await CoreGetWorkspaceDetails(workspaceId);
+            resultWorkspaceList.Elements.Add(updatedWorkspace);
+        }
+
+        string fileName = $"updated-{BASE_FILE_NAME}";
+        string filePath = await SaveContent(fileName, resultWorkspaceList);
+
+        return IWorkspaceCommandResult<WorkspaceList>.CreateNew(filePath, resultWorkspaceList.Elements.Count, resultWorkspaceList);
+    }
+
     private async Task<WorkspaceList> CoreList()
     {
         return await GetElementCollection<WorkspaceList, Workspace>(BASE_COMMAND);
@@ -145,5 +165,12 @@ public class WorkspacesService(IConfiguration configuration, IMsApiRestToken tok
         string queryContent = JsonSerializer.Serialize(CapacityQueryContent.CreateNew(capacityId));
 
         await PostElement(command, queryContent);
+    }
+
+    private async Task CoreUnassignWorkspaceToCapacity(string workspaceId)
+    {
+        string command = $"{BASE_COMMAND}/{workspaceId}/{UNASSIGN_TO_CAPACITY_COMMAND_PART}";
+
+        await PostElement(command, string.Empty);
     }
 }

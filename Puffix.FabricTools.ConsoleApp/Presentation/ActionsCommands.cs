@@ -2,7 +2,6 @@
 using Puffix.FabricTools.ConsoleApp.Domain.RestApi.Models;
 using Puffix.FabricTools.ConsoleApp.Domain.Workspaces;
 using Puffix.FabricTools.ConsoleApp.Domain.Workspaces.Models;
-using System;
 using System.Diagnostics;
 
 namespace Puffix.FabricTools.ConsoleApp.Presentation;
@@ -22,8 +21,9 @@ public class ActionsCommands(IWorkspacesService workspacesService)
             ConsoleHelper.Write(ConsoleColor.DarkYellow, "!under construction");
             ConsoleHelper.WriteNewLine(1);
             ConsoleHelper.Write("Press:");
-            ConsoleHelper.Write("- R to assign roles from a file.");
-            ConsoleHelper.Write("- C to assign a workspace list to a capacity.");
+            //ConsoleHelper.Write("- R to assign roles from a file.");
+            ConsoleHelper.Write("- A to assign a workspace list to a capacity.");
+            ConsoleHelper.Write("- U to unassign a workspace list from a capacity.");
             ConsoleHelper.Write("- Escape to return to main menu.");
 
             ConsoleHelper.WriteNewLine(1);
@@ -31,10 +31,12 @@ public class ActionsCommands(IWorkspacesService workspacesService)
 
             if (key == ConsoleKey.Escape)
                 ConsoleHelper.WriteInfo("Return to main menu");
-            else if (key == ConsoleKey.R)
-                await AddRoleAssignments();
-            else if (key == ConsoleKey.C)
+            //else if (key == ConsoleKey.R)
+            //    await AddRoleAssignments();
+            else if (key == ConsoleKey.A)
                 await AssignWorkspaceCollectionToCapacity();
+            else if (key == ConsoleKey.U)
+                await UnassignWorkspaceCollectionToCapacity();
             else
                 ConsoleHelper.WriteWarning($"The key {key} is not a known command (for the moment :-) )");
 
@@ -62,15 +64,35 @@ public class ActionsCommands(IWorkspacesService workspacesService)
 
         if (string.IsNullOrEmpty(configurationFilePath ))
         {
-            ConsoleHelper.WriteError("A valid file path is required to assign, ; to a capacity.");
+            ConsoleHelper.WriteError("A valid file path is required to assign a workspace list to a capacity.");
             return;
         }
 
         string commandMessage = $"Assign a list of workspace to a capacity";
         string successMessage = $"The workspaces are assgined to the capacity. The updated workspace collection";
-        string errorMessage = $"assigning  a list of workspace to a capacity";
+        string errorMessage = $"assigning a list of workspace to a capacity";
 
         async Task<IWorkspaceCommandResult<WorkspaceList>> command(string configurationFilePath) => await workspacesService.AssignWorkspaceCollectionToCapacity(configurationFilePath);
+
+        await ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command, configurationFilePath);
+    }
+
+    public async Task UnassignWorkspaceCollectionToCapacity()
+    {
+        const string elementToGet = "capacity and workspace collection";
+        string configurationFilePath = GetEnteredPath(elementToGet);
+
+        if (string.IsNullOrEmpty(configurationFilePath))
+        {
+            ConsoleHelper.WriteError("A valid file path is required to unassign a workspace list from a capacity.");
+            return;
+        }
+
+        string commandMessage = $"Unssign a list of workspace from a capacity";
+        string successMessage = $"The workspaces are unassgined from the capacity. The updated workspace collection";
+        string errorMessage = $"unassigning a list of workspace from a capacity";
+
+        async Task<IWorkspaceCommandResult<WorkspaceList>> command(string configurationFilePath) => await workspacesService.UnassignWorkspaceCollectionToCapacity(configurationFilePath);
 
         await ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command, configurationFilePath);
     }
