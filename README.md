@@ -4,7 +4,9 @@ The **Fabric Tools Console App** is a console application to perform some automa
 
 [![.NET](https://github.com/EhRom/Puffix.FabricTools/actions/workflows/dotnet.yml/badge.svg)](https://github.com/EhRom/Puffix.FabricTools/actions/workflows/dotnet.yml)
 
-To use the console application, a Service Principal / **Microsoft Entra App** is needed to perform authentication of the users. The step to create the Microsoft Entra App are available in this [documentation](https://learn.microsoft.com/en-us/rest/api/fabric/articles/get-started/create-entra-app).
+To use the console application, a Service Principal / **Microsoft Entra App** is needed to perform authentication of the users. See the [configure](#configure) section for more details
+
+## Functionalities
 
 The following functionnalities are available:
 
@@ -61,3 +63,18 @@ The following functionnalities are available:
 		]
     }
 	```
+
+## Configure
+
+The steps to create the Service principal / **Microsoft Entra App** are available in this [documentation](https://learn.microsoft.com/en-us/rest/api/fabric/articles/get-started/create-entra-app).
+
+The tenant and the **Microsoft Entra App** ID need to be reference in the app `appSettings.json` file or in a new one, called `appSettings.local.json` with the following content:
+
+```json
+{
+  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
+```
+
+Replace the `clientId` field by the Microsoft Entra App ID, and the tenant ID with the tenant ID of your Microsoft Entra App ID and Fabric resources.
