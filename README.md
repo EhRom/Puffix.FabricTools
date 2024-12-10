@@ -4,6 +4,8 @@ The **Fabric Tools Console App** is a console application to perform some automa
 
 [![.NET](https://github.com/EhRom/Puffix.FabricTools/actions/workflows/dotnet.yml/badge.svg)](https://github.com/EhRom/Puffix.FabricTools/actions/workflows/dotnet.yml)
 
+To use the console application, a Service Principal / **Microsoft Entra App** is needed to perform authentication of the users. The step to create the Microsoft Entra App are available in this [documentation](https://learn.microsoft.com/en-us/rest/api/fabric/articles/get-started/create-entra-app).
+
 The following functionnalities are available:
 
 - Authentication:
