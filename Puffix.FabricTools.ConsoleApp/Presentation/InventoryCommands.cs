@@ -129,7 +129,7 @@ public class InventoryCommands
 
         Func<Task<ICapacityCommandResult<CapacityList>>> command = capacitiesService.List;
 
-        await ExecuteCommand<ICapacityCommandResult<CapacityList>, CapacityList>(commandMessage, successMessage, errorMessage, command);
+        await BaseCommands.ExecuteCommand<ICapacityCommandResult<CapacityList>, CapacityList>(commandMessage, successMessage, errorMessage, command);
     }
 
     public async Task ListConnections()
@@ -140,7 +140,7 @@ public class InventoryCommands
 
         Func<Task<IConnectionCommandResult<ConnectionList>>> command = connectionsService.List;
 
-        await ExecuteCommand<IConnectionCommandResult<ConnectionList>, ConnectionList>(commandMessage, successMessage, errorMessage, command);
+        await BaseCommands.ExecuteCommand<IConnectionCommandResult<ConnectionList>, ConnectionList>(commandMessage, successMessage, errorMessage, command);
     }
 
     public async Task ListDomains()
@@ -151,9 +151,8 @@ public class InventoryCommands
 
         Func<Task<IDomainCommandResult<FabricDomainList>>> command = domainsService.List;
 
-        await ExecuteCommand<IDomainCommandResult<FabricDomainList>, FabricDomainList>(commandMessage, successMessage, errorMessage, command);
+        await BaseCommands.ExecuteCommand<IDomainCommandResult<FabricDomainList>, FabricDomainList>(commandMessage, successMessage, errorMessage, command);
     }
-
     public async Task ListGateways()
     {
         const string commandMessage = "List gateways";
@@ -162,7 +161,7 @@ public class InventoryCommands
 
         Func<Task<IGatewayCommandResult<GatewayList>>> command = gatewaysService.List;
 
-        await ExecuteCommand<IGatewayCommandResult<GatewayList>, GatewayList>(commandMessage, successMessage, errorMessage, command);
+        await BaseCommands.ExecuteCommand<IGatewayCommandResult<GatewayList>, GatewayList>(commandMessage, successMessage, errorMessage, command);
     }
 
     public async Task ListTenantItems()
@@ -173,7 +172,7 @@ public class InventoryCommands
 
         Func<Task<IWorkspaceCommandResult<FabricAdminItemList>>> command = adminWorkspacesService.ListItems;
 
-        await ExecuteCommand<IWorkspaceCommandResult<FabricAdminItemList>, FabricAdminItemList>(commandMessage, successMessage, errorMessage, command);
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<FabricAdminItemList>, FabricAdminItemList>(commandMessage, successMessage, errorMessage, command);
     }
 
     public async Task ListWorkspaces()
@@ -184,7 +183,7 @@ public class InventoryCommands
 
         Func<Task<IWorkspaceCommandResult<WorkspaceList>>> command = workspacesService.List;
 
-        await ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command);
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command);
     }
 
     public async Task ListWorkspacesWithDetails()
@@ -195,7 +194,7 @@ public class InventoryCommands
 
         Func<Task<IWorkspaceCommandResult<WorkspaceList>>> command = workspacesService.ListWithDetails;
 
-        await ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command);
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command);
     }
 
     public async Task ListWithRoleAssignements()
@@ -206,7 +205,7 @@ public class InventoryCommands
 
         Func<Task<IWorkspaceCommandResult<WorkspaceList>>> command = workspacesService.ListWithRoleAssignements;
 
-        await ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command);
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command);
     }
 
     public async Task ListWorkspacesAsAdmin()
@@ -217,7 +216,7 @@ public class InventoryCommands
 
         Func<Task<IWorkspaceCommandResult<AdminWorkspaceList>>> command = adminWorkspacesService.List;
 
-        await ExecuteCommand<IWorkspaceCommandResult<AdminWorkspaceList>, AdminWorkspaceList>(commandMessage, successMessage, errorMessage, command);
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<AdminWorkspaceList>, AdminWorkspaceList>(commandMessage, successMessage, errorMessage, command);
     }
 
     public async Task ListGitConnectionsAsAdmin()
@@ -228,14 +227,14 @@ public class InventoryCommands
 
         Func<Task<IWorkspaceCommandResult<GitConnectionList>>> command = adminWorkspacesService.ListGitConnections;
 
-        await ExecuteCommand<IWorkspaceCommandResult<GitConnectionList>, GitConnectionList>(commandMessage, successMessage, errorMessage, command);
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<GitConnectionList>, GitConnectionList>(commandMessage, successMessage, errorMessage, command);
     }
 
     public async Task GetWorkspace()
     {
         const string elementToGet = "workspace ID to get";
 
-        Guid guid = GetEnteredGuid(elementToGet);
+        Guid guid = BaseCommands.GetEnteredGuid(elementToGet);
 
         string commandMessage = $"Get the {guid} workspace details";
         string successMessage = $"The {guid} workspace details";
@@ -243,14 +242,14 @@ public class InventoryCommands
 
         async Task<IWorkspaceCommandResult<Workspace>> command(string worksapceId) => await workspacesService.GetWorkspaceDetails(worksapceId);
 
-        await ExecuteCommand<IWorkspaceCommandResult<Workspace>, Workspace>(commandMessage, successMessage, errorMessage, command, guid.ToString("D"));
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<Workspace>, Workspace>(commandMessage, successMessage, errorMessage, command, guid.ToString("D"));
     }
 
     public async Task GetWorkspaceAsAdminWithAccessDetails()
     {
         const string elementToGet = "workspace ID to get";
 
-        Guid guid = GetEnteredGuid(elementToGet);
+        Guid guid = BaseCommands.GetEnteredGuid(elementToGet);
 
         string commandMessage = $"Get the {guid} workspace (admin) with access details";
         string successMessage = $"The {guid} workspace (admin) with access details";
@@ -258,14 +257,14 @@ public class InventoryCommands
 
         async Task<IWorkspaceCommandResult<AdminWorkspace>> command(string worksapceId) => await adminWorkspacesService.GetWorkspaceDetails(worksapceId);
 
-        await ExecuteCommand<IWorkspaceCommandResult<AdminWorkspace>, AdminWorkspace>(commandMessage, successMessage, errorMessage, command, guid.ToString("D"));
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<AdminWorkspace>, AdminWorkspace>(commandMessage, successMessage, errorMessage, command, guid.ToString("D"));
     }
 
     public async Task GetWorkspaceItems()
     {
         const string elementToGet = "workspace ID from which to get elements";
 
-        Guid guid = GetEnteredGuid(elementToGet);
+        Guid guid = BaseCommands.GetEnteredGuid(elementToGet);
 
         string commandMessage = $"Get the {guid} workspace elements";
         string successMessage = $"The {guid} workspace elements";
@@ -273,18 +272,18 @@ public class InventoryCommands
 
         async Task<IWorkspaceCommandResult<FabricItemList>> command(string worksapceId) => await workspacesService.GetWorkspaceItems(worksapceId);
 
-        await ExecuteCommand<IWorkspaceCommandResult<FabricItemList>, FabricItemList>(commandMessage, successMessage, errorMessage, command, guid.ToString("D"));
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<FabricItemList>, FabricItemList>(commandMessage, successMessage, errorMessage, command, guid.ToString("D"));
     }
 
     public async Task GetWorkspaceAdminItemWithAccessDetails()
     {
         const string workspaceText = "workspace ID of the item";
 
-        Guid workspaceGuid = GetEnteredGuid(workspaceText);
+        Guid workspaceGuid = BaseCommands.GetEnteredGuid(workspaceText);
 
         const string itemText = "item ID from which to get role assignments";
 
-        Guid itemGuid = GetEnteredGuid(itemText);
+        Guid itemGuid = BaseCommands.GetEnteredGuid(itemText);
 
         string commandMessage = $"Get the {itemGuid} item from {workspaceGuid} workspace role assignements";
         string successMessage = $"The {itemGuid} item from {workspaceGuid} workspace role assignements";
@@ -292,101 +291,6 @@ public class InventoryCommands
 
         async Task<IWorkspaceCommandResult<FabricAdminItem>> command(string worksapceId, string itemId) => await adminWorkspacesService.GetItemRoleAssignements(worksapceId, itemId);
 
-        await ExecuteCommand<IWorkspaceCommandResult<FabricAdminItem>, FabricAdminItem>(commandMessage, successMessage, errorMessage, command, workspaceGuid.ToString("D"), itemGuid.ToString("D"));
-    }
-
-    private async Task ExecuteCommand<CommandResultT, ResultT>(string commandMessage, string successMessage, string errorMessage, Func<Task<CommandResultT>> command)
-        where CommandResultT : ICommandResult<ResultT>
-        where ResultT : class
-    {
-        try
-        {
-            ConsoleHelper.WriteInfo($"{commandMessage} in the Fabric service");
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            CommandResultT result = await command();
-
-            stopwatch.Stop();
-            ConsoleHelper.WriteVerbose($"Command duration: {stopwatch.Elapsed}");
-
-            ConsoleHelper.WriteSuccess($"{successMessage} is avalable in the {result.ResultFilePath} file ({result.ResultCount} elements saved).");
-        }
-        catch (Exception error)
-        {
-            ConsoleHelper.WriteError($"An error occurred while {errorMessage} in the Fabric service", error);
-        }
-    }
-
-    private async Task ExecuteCommand<CommandResultT, ResultT>(string commandMessage, string successMessage, string errorMessage, Func<string, Task<CommandResultT>> command, string argument)
-        where CommandResultT : ICommandResult<ResultT>
-        where ResultT : class
-    {
-        try
-        {
-            ConsoleHelper.WriteInfo($"{commandMessage} in the Fabric service");
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            CommandResultT result = await command(argument);
-
-            stopwatch.Stop();
-            ConsoleHelper.WriteVerbose($"Command duration: {stopwatch.Elapsed}");
-
-            ConsoleHelper.WriteSuccess($"{successMessage} is avalable in the {result.ResultFilePath} file ({result.ResultCount} elements saved).");
-        }
-        catch (Exception error)
-        {
-            ConsoleHelper.WriteError($"An error occurred while {errorMessage} in the Fabric service", error);
-        }
-    }
-
-    private async Task ExecuteCommand<CommandResultT, ResultT>(string commandMessage, string successMessage, string errorMessage, Func<string, string, Task<CommandResultT>> command, string firstArgument, string seceondArgument)
-        where CommandResultT : ICommandResult<ResultT>
-        where ResultT : class
-    {
-        try
-        {
-            ConsoleHelper.WriteInfo($"{commandMessage} in the Fabric service");
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            CommandResultT result = await command(firstArgument, seceondArgument);
-
-            stopwatch.Stop();
-            ConsoleHelper.WriteVerbose($"Command duration: {stopwatch.Elapsed}");
-
-            ConsoleHelper.WriteSuccess($"{successMessage} is avalable in the {result.ResultFilePath} file ({result.ResultCount} elements saved).");
-        }
-        catch (Exception error)
-        {
-            ConsoleHelper.WriteError($"An error occurred while {errorMessage} in the Fabric service", error);
-        }
-    }
-
-    private static Guid GetEnteredGuid(string elementToGet)
-    {
-        Guid guid = Guid.Empty;
-        int retryCount = 0;
-        const int maxRetryCount = 5;
-
-        do
-        {
-            ConsoleHelper.WriteNewLine(1);
-
-            ConsoleHelper.WriteInfo($"Enter the {elementToGet}:");
-            ConsoleHelper.WriteNewLine(1);
-
-            string enteredText = Console.ReadLine() ?? string.Empty;
-
-            if (!Guid.TryParse(enteredText, out guid))
-            {
-                ConsoleHelper.WriteWarning("The entered text is no a valid GUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx, x, hexadecimal value: between 0 and 9 or A,B,C,D,E or F)");
-                ConsoleHelper.WriteVerbose($"Attempt {++retryCount} / {maxRetryCount}");
-            }
-
-        } while (guid == Guid.Empty && retryCount < maxRetryCount);
-
-        return guid;
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<FabricAdminItem>, FabricAdminItem>(commandMessage, successMessage, errorMessage, command, workspaceGuid.ToString("D"), itemGuid.ToString("D"));
     }
 }

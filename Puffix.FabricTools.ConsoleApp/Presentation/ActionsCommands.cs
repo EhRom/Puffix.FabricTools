@@ -1,8 +1,6 @@
 ﻿using Puffix.ConsoleLogMagnifier;
-using Puffix.FabricTools.ConsoleApp.Domain.RestApi.Models;
 using Puffix.FabricTools.ConsoleApp.Domain.Workspaces;
 using Puffix.FabricTools.ConsoleApp.Domain.Workspaces.Models;
-using System.Diagnostics;
 
 namespace Puffix.FabricTools.ConsoleApp.Presentation;
 
@@ -47,7 +45,7 @@ public class ActionsCommands(IWorkspacesService workspacesService)
     {
         const string elementToGet = "role assignements configuration";
 
-        string path = GetEnteredPath(elementToGet);
+        string path = BaseCommands.GetEnteredPath(elementToGet);
 
         await Task.Delay(100);
     }
@@ -60,9 +58,9 @@ public class ActionsCommands(IWorkspacesService workspacesService)
     public async Task AssignWorkspaceCollectionToCapacity()
     {
         const string elementToGet = "capacity and workspace collection";
-        string configurationFilePath = GetEnteredPath(elementToGet);
+        string configurationFilePath = BaseCommands.GetEnteredPath(elementToGet);
 
-        if (string.IsNullOrEmpty(configurationFilePath ))
+        if (string.IsNullOrEmpty(configurationFilePath))
         {
             ConsoleHelper.WriteError("A valid file path is required to assign a workspace list to a capacity.");
             return;
@@ -74,13 +72,13 @@ public class ActionsCommands(IWorkspacesService workspacesService)
 
         async Task<IWorkspaceCommandResult<WorkspaceList>> command(string configurationFilePath) => await workspacesService.AssignWorkspaceCollectionToCapacity(configurationFilePath);
 
-        await ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command, configurationFilePath);
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command, configurationFilePath);
     }
 
     public async Task UnassignWorkspaceCollectionToCapacity()
     {
         const string elementToGet = "capacity and workspace collection";
-        string configurationFilePath = GetEnteredPath(elementToGet);
+        string configurationFilePath = BaseCommands.GetEnteredPath(elementToGet);
 
         if (string.IsNullOrEmpty(configurationFilePath))
         {
@@ -94,85 +92,6 @@ public class ActionsCommands(IWorkspacesService workspacesService)
 
         async Task<IWorkspaceCommandResult<WorkspaceList>> command(string configurationFilePath) => await workspacesService.UnassignWorkspaceCollectionToCapacity(configurationFilePath);
 
-        await ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command, configurationFilePath);
-    }
-
-    private static string GetEnteredPath(string elementToGet)
-    {
-        string path = string.Empty;
-        int retryCount = 0;
-        const int maxRetryCount = 5;
-
-        do
-        {
-            ConsoleHelper.WriteNewLine(1);
-
-            ConsoleHelper.WriteInfo($"Enter the {elementToGet} file path:");
-            ConsoleHelper.WriteNewLine(1);
-
-            string enteredText = Console.ReadLine() ?? string.Empty;
-            ConsoleHelper.ClearLastLines();
-
-            if (!Path.Exists(enteredText))
-            {
-                ConsoleHelper.WriteWarning("The entered text is no a valid path, or the file or directory does not exists");
-                ConsoleHelper.WriteVerbose($"Attempt {++retryCount} / {maxRetryCount}");
-            }
-            else
-                path = enteredText;
-
-        } while (path == string.Empty && retryCount < maxRetryCount);
-
-        return path;
-    }
-
-    private static Guid GetEnteredGuid(string elementToGet)
-    {
-        Guid guid = Guid.Empty;
-        int retryCount = 0;
-        const int maxRetryCount = 5;
-
-        do
-        {
-            ConsoleHelper.WriteNewLine(1);
-
-            ConsoleHelper.WriteInfo($"Enter the {elementToGet}:");
-            ConsoleHelper.WriteNewLine(1);
-
-            string enteredText = Console.ReadLine() ?? string.Empty;
-            ConsoleHelper.ClearLastLines();
-
-            if (!Guid.TryParse(enteredText, out guid))
-            {
-                ConsoleHelper.WriteWarning("The entered text is no a valid GUID (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx, x, hexadecimal value: between 0 and 9 or A,B,C,D,E or F)");
-                ConsoleHelper.WriteVerbose($"Attempt {++retryCount} / {maxRetryCount}");
-            }
-
-        } while (guid == Guid.Empty && retryCount < maxRetryCount);
-
-        return guid;
-    }
-
-    private async Task ExecuteCommand<CommandResultT, ResultT>(string commandMessage, string successMessage, string errorMessage, Func<string, Task<CommandResultT>> command, string argument)
-        where CommandResultT : ICommandResult<ResultT>
-        where ResultT : class
-    {
-        try
-        {
-            ConsoleHelper.WriteInfo($"{commandMessage} in the Fabric service");
-
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            CommandResultT result = await command(argument);
-
-            stopwatch.Stop();
-            ConsoleHelper.WriteVerbose($"Command duration: {stopwatch.Elapsed}");
-
-            ConsoleHelper.WriteSuccess($"{successMessage} is avalable in the {result.ResultFilePath} file ({result.ResultCount} elements saved).");
-        }
-        catch (Exception error)
-        {
-            ConsoleHelper.WriteError($"An error occurred while {errorMessage} in the Fabric service", error);
-        }
+        await BaseCommands.ExecuteCommand<IWorkspaceCommandResult<WorkspaceList>, WorkspaceList>(commandMessage, successMessage, errorMessage, command, configurationFilePath);
     }
 }
