@@ -14,7 +14,11 @@ public interface IWorkspacesService
 
     Task<IWorkspaceCommandResult<FabricItemList>> GetWorkspaceItems(string workspaceId);
 
+    Task<IWorkspaceCommandResult<Workspace>> AssignWorkspaceToCapacity(string capacityId, string workspaceId);
+
     Task<IWorkspaceCommandResult<WorkspaceList>> AssignWorkspaceCollectionToCapacity(string queryFilePath);
+
+    Task<IWorkspaceCommandResult<Workspace>> UnassignWorkspaceToCapacity(string workspaceId);
 
     Task<IWorkspaceCommandResult<WorkspaceList>> UnassignWorkspaceCollectionToCapacity(string queryFilePath);
 }

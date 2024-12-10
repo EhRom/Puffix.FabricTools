@@ -94,6 +94,20 @@ public class WorkspacesService(IConfiguration configuration, IMsApiRestToken tok
         return IWorkspaceCommandResult<FabricItemList>.CreateNew(filePath, 1, itemList);
     }
 
+    public async Task<IWorkspaceCommandResult<Workspace>> AssignWorkspaceToCapacity(string capacityId, string workspaceId)
+    {
+        await CoreAssignWorkspaceToCapacity(capacityId, workspaceId);
+
+        Workspace updatedWorkspace = await CoreGetWorkspaceDetails(workspaceId);
+       
+        string fileName = BASE_FILE_NAME.TrimEnd('s');
+        fileName = $"{fileName}-{workspaceId}-";
+
+        string filePath = await SaveContent(fileName, updatedWorkspace);
+
+        return IWorkspaceCommandResult<Workspace>.CreateNew(filePath, 1, updatedWorkspace);
+    }
+
     public async Task<IWorkspaceCommandResult<WorkspaceList>> AssignWorkspaceCollectionToCapacity(string queryFilePath)
     {
         WorkspaceList resultWorkspaceList = new WorkspaceList();
@@ -111,6 +125,20 @@ public class WorkspacesService(IConfiguration configuration, IMsApiRestToken tok
         string filePath = await SaveContent(fileName, resultWorkspaceList);
 
         return IWorkspaceCommandResult<WorkspaceList>.CreateNew(filePath, resultWorkspaceList.Elements.Count, resultWorkspaceList);
+    }
+
+    public async Task<IWorkspaceCommandResult<Workspace>> UnassignWorkspaceToCapacity(string workspaceId)
+    {
+        await CoreUnassignWorkspaceToCapacity(workspaceId);
+
+        Workspace updatedWorkspace = await CoreGetWorkspaceDetails(workspaceId);
+
+        string fileName = BASE_FILE_NAME.TrimEnd('s');
+        fileName = $"{fileName}-{workspaceId}-";
+
+        string filePath = await SaveContent(fileName, updatedWorkspace);
+
+        return IWorkspaceCommandResult<Workspace>.CreateNew(filePath, 1, updatedWorkspace);
     }
 
     public async Task<IWorkspaceCommandResult<WorkspaceList>> UnassignWorkspaceCollectionToCapacity(string queryFilePath)

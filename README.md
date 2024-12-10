@@ -35,7 +35,8 @@ The following functionnalities are available:
 
 - Actions / Commands:
 
-  - [Assign a capacity to a workspace](https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/assign-to-capacity).
+  - [Assign a workspace to a capacity](https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/assign-to-capacity).
+  - [Assign a workspace list to a capacity](https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/assign-to-capacity).
 
     > The capacity ID and the workspace list must be filled in a configuration file. Sample:
 
@@ -50,7 +51,8 @@ The following functionnalities are available:
     }
 	```
   
-  - [Unassign a capacity from a workspace](https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/unassign-from-capacity?).
+  - [Unassign a workspace from a capacity](https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/unassign-from-capacity).
+  - [Unassign a workspace list from a capacity](https://learn.microsoft.com/en-us/rest/api/fabric/core/workspaces/unassign-from-capacity).
 
     > The capacity ID and the workspace list must be filled in a configuration file. Sample:
 
